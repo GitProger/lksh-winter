@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+signed main()
+{
+    int n, k, i, j;
+    cin >> n >> k;
+    vector<pair<int, int>> a(n);
+    vector<int> p(k);
+    for (i=0; i < n; ++i) {
+        cin >> a[i].first;
+        a[i].second = i;
+    }
+    sort(a.begin(), a.end());
+    for (i=0; i < k; ++i)
+        cin >> p[i];
+    int mx=0, kmx=0;
+    set<pair<int, int>> pset;
+    for (i=0; i < n; ++i) {
+        int sum=0;
+        int cnt=0;
+        for (auto it = pset.begin(); it != pset.end(); ++it) {
+            sum += (*it).first * a[cnt].first;
+            ++cnt;
+        }
+        for (j = pset.size(); j < n; ++j)
+            sum += p[pset.size()] * a[j].first;
+        if (sum > mx) {
+            mx = sum;
+            kmx = i;
+        }
+        pset.insert({p[i], i});
+    }
+    if (kmx == 0) {
+        for (i=0; i < n; ++i)
+            cout << "0\n";
+        return 0;
+    }
+    pset.clear();
+    for (i=0; i < kmx; ++i)
+        pset.insert({p[i], i});
+    vector<int> ans(n, -2);
+    vector<int> ord(kmx);
+    for (i=0; i < kmx; ++i) {
+        auto[x, y] = *pset.begin();
+        pset.erase(pset.begin());
+        ord[y] = a[i].second;
+    }
+    ans[ord[0]] = -1;
+    for (i=1; i < kmx; ++i)
+        ans[ord[i]] = ord[i - 1];
+    for (i=0; i < n; ++i)
+        if (ans[i] == -2)
+            ans[i] = ord[kmx - 1];
+    for (int x : ans)
+        cout << x + 1 << "\n";
+    return 0;
+}

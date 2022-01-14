@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+g++ -Wall -o o -std=c++17 main.cpp
+java -jar SnowCleaningVis.jar -seed 2 -exec "./o"
+

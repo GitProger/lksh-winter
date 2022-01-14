@@ -1,0 +1,100 @@
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <utility>
+#include <sstream>
+#include <numeric>
+#include <algorithm>
+#include <cmath>
+#include <vector>
+#include <queue>
+#include <deque>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <string>
+#include <random>
+#include <chrono>
+#include <fstream>
+#include <bitset>
+#include <complex>
+#include <cassert>
+#include <ext/pb_ds/assoc_container.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+
+mt19937 rnd(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+vector<vector<int>> g;
+
+int cntnow = 0, cntneed = 0;
+
+bool dfs(int v, int pr) {
+    if (g[v].size() > 2 && ++cntnow == cntneed) {
+        return true;
+    }
+    for (int u : g[v]) {
+        if (u == pr) {
+            continue;
+        }
+        if (dfs(u, v)) {
+            return true;
+        }
+    }
+    if (g[v].size() > 2) {
+        --cntnow;
+    }
+    return false;
+}
+
+void solve() {
+
+    int n;
+    cin >> n;
+    g.resize(n);
+    for (int i = 0; i < n - 1; ++i) {
+        int v, u;
+        cin >> v >> u;
+        --v;
+        --u;
+        g[v].emplace_back(u);
+        g[u].emplace_back(v);
+    }
+    for (int i = 0; i < n; ++i) {
+        if (g[i].size() > 2) {
+            cntneed++;
+        }
+    }
+    bool can = false;
+    for (int i = 0; i < n; ++i) {
+        if (g[i].size() > 2) {
+            if (dfs(i, i)) {
+                can = true;
+                break;
+            }
+        }
+    }
+    if (can || cntneed == 0) {
+        cout << "YES\n";
+    }
+    else {
+        cout << "NO\n";
+    }
+
+}
+
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    int t;
+    t = 1;
+    while (t--) {
+        solve();
+    }
+
+    return 0;
+}

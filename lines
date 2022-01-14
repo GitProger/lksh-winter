@@ -1,0 +1,22 @@
+#!/usr/bin/env perl
+
+$day = shift;
+
+$add = "*/";
+$total = 0;
+@lst = split('\n', `ls -1 -d ./$day`);
+
+for $ext ("cpp", "py", "kt") {
+    for $dir (@lst) {
+        for ($i = 0; $i < 7; $i++) {
+            $full = $dir . ('*/' x $i) . "*.$ext";
+#            system("wc -l $full | grep итого");
+            $res = `wc -l $full 2>/dev/null | grep итого`; # 2> ignore `...` errors
+            $res =~ s/итого//gi;
+            print "$full: $res\n" if ($res);
+            $total += int($res);
+        }
+    }
+}
+print "total: $total\n";
+

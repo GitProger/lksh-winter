@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+./task < input > buf
+java -jar GarlandOfLightsVis.jar vis buf
+feh buf.png

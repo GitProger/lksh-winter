@@ -1,0 +1,139 @@
+
+primes = []
+d = [-1] x (n + 1)
+for i in 2 .. n
+   if d[i] = -1
+       d[i] = primes.length
+       primes.add(i)
+   for (j = 0; j < d[i] and i * primes[j] < n; j++)
+       d[i * primes[j]] = j
+
+# i 2 3 4 5 6 
+# d 0 1 - 2 -
+
+Расширенный алгоритм Евклида
+ решение Диофантового уравнения
+ax + by = c
+a % gcd(a, b) = 0, b % gcd(a, b) = 0 ==> c % gcd(a, b) = 0
+g = gcd(a, b)
+a' = a / g; 
+b' = b / g; 
+c' = c / g;
+
+a'x + b'x = c'
+gcd(a', b') = 1
+раширенный алогритм ищет такие х и у что
+!!  a0 x + b0 y = c0    | * gcd(a0, b0) / c0
+!!! ax + by = gcd(a, b)
+
+a * 1 + b * 0 = a
+a * 0 + b * 1 = b
+
+a * x_i     + b * y_i       = r_i
+a * x_(i+1) + b * y_(i + 1) = r_(i + 1)
+r_(i + 1) =   r_i mod r_(i+1)   = r_i - k * r_(i + 1)
+
+x_(i + 2) = x_i - kx_(i + 1)
+y_(i + 2) = y_i - ky_(i + 1)
+
+
+pair euclid(a, b)
+   if b == 0: return {1, 0}
+   [x, y] = euclid(b, a % b)
+   return { y, x - (a / b) * y }
+
+  x * b + y * (a % b) = c
+  a * y + (x - a / b * y) b = c
+  
+  (a % b) y + (a / b) b y 
+
+Обратное по модулю
+mod p
+
+b/a = b*a^-1,   b*a^-1 * a = b
+
+                a * a^-1 = 1   mod p
+
+                a * a^-1 + p * b = 1  % mod p -> a*a^-1 = 1
+                
+ 
+
+  
+
+a % p != 0
+a ^ (p - 1) == 1 mod p
+a ^ (p - 2) == a^-1 mod p
+
+a ^ ф(p) == 1 mod p    |   теорема Эйлера
+ф(p) = количество чисел меньших p взаимнопростых с ним
+
+[1 .. p-1] * k  mod p -> [перестановка]
+
+1 * 2 * 3 ... k ^ (p - 1) = k * 2k * 3k .. (p - 1)k
+(p - 1)! k ^ (p - 1) = (p - 1)!
+k ^ (p - 1) = 1
+
+
+Китайская теорема об остатках
+
+n, m; gcd n, m = 0
+
+x % n = a  |  x = a mod n
+x % m = b  |  x = b mod m
+
+/ mx = ma mod nm
+\ nx = nb mod mn
+... euclid ...
+  x = k mod mn
+  (m - n) x = ma - nb  mod nm
+
+/ x = r1 mod a1
+ ...
+\ x = rk mod ak
+
+M = a1 * a2 * ... * ak
+M_i = M/a_i
+M_i^-1  - обратный элемент по ai
+
+
+x = Sum[1..k] r_i M_i M_i^-1 mod M
+такое x = 0 при i != j (a_j включено в M_i)
+
+x = r_j mod a_j
+x = 0   mod a_i
+
+====================================================
+ Тест Миллера-Рабина на простоту
+
+V a < p, 
+a ^ (p - 1) = 1 mod p
+
+возьмем p
+если не выполнится то р точно не простое
+
+Для чисел кармайкла не работает
+Например 561 (оно пройдет тест, но оно делится на 3 11 17)
+
+p - 1 = 2^s * t, t - нечетное
+тогда либо (если p простое):
+*  a ^ t = 1                      mod p
+* V r < s: a ^ (2 ^ r * t) = -1   mod p
+
+a ^ (2 ^ s * t) = 1 mod p   | sqrt
+/ a ^ (t * 2 ^ (s - 1)) = 1 mod p
+\ a ^ (t * 2 ^ (s - 1)) = -1 mod p  стоп (из -1 не извлечь)
+
+если p не простое, то таких а что тест говорит 1, не больше р / 4
+
+bool test(int p) {
+    if p < 2: return 0
+    a = rand[2, p - 1]
+    g = pow(a, t, % p)
+    for i = 0 .. s - 1:
+        if g == 1 mod p:
+            return 1
+        if g != -1 mod p && g * g == 1 mod p:
+            return 0
+        g = g * g % p
+    return g == 1
+}
